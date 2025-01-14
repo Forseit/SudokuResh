@@ -115,4 +115,9 @@
     top: 50%;
     transform: translate(-50%, -50%);
   }
+
+  /* Скрываем кнопки с цифрами при печати */
+  .grid-cols-10 {
+    display: none !important;
+  }
 }
