@@ -13,8 +13,8 @@ export const translations: Translations = {
     print: "Print",
   },
   ru: {
-    title: "Фонд поддержки голодающих афроамериканцев",
-    keyboard: "Введите номер карты выше",
-    print: "Распечатать чек о пожертвование",
+    title: "Решатель Судоки",
+    keyboard: "Клавиатура",
+    print: "Распечатать",
   },
 };
