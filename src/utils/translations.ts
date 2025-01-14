@@ -13,7 +13,7 @@ export const translations: Translations = {
     print: "Print",
   },
   ru: {
-    title: "Решатель Судоки",
+    title: "Решатель Судоку",
     keyboard: "Клавиатура",
     print: "Распечатать",
   },
