@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Keyboard, Printer, Languages } from "lucide-react";
 import { translations } from "@/utils/translations";
+import Footer from "@/components/Footer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,9 +29,9 @@ const Index = () => {
   const t = translations[language];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center py-6">
-      <div className="w-full max-w-4xl px-4">
-        <div className="flex justify-between items-center mb-8">
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="w-full max-w-4xl px-4 mx-auto flex-grow">
+        <div className="flex justify-between items-center mb-8 pt-6">
           <h1 className="text-3xl font-bold">{t.title}</h1>
           <div className="flex items-center gap-4">
             <DropdownMenu>
@@ -53,16 +54,13 @@ const Index = () => {
             </DropdownMenu>
             <div className="flex items-center gap-2">
               <Sun className="h-4 w-4" />
-              <Switch
-                checked={theme === "dark"}
-                onCheckedChange={toggleTheme}
-              />
+              <Switch checked={theme === "dark"} onCheckedChange={toggleTheme} />
               <Moon className="h-4 w-4" />
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-6 mb-8">
           <SudokuGrid useKeyboard={useKeyboard} t={t} />
           
           <div className="flex gap-4 flex-wrap justify-center">
@@ -82,6 +80,7 @@ const Index = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
