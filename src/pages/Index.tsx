@@ -63,7 +63,7 @@ const Index = () => {
         </div>
 
         <div className="flex flex-col items-center gap-6">
-          <SudokuGrid useKeyboard={useKeyboard} />
+          <SudokuGrid useKeyboard={useKeyboard} t={t} />
           
           <div className="flex gap-4 flex-wrap justify-center">
             <Button
