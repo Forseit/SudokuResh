@@ -9,7 +9,7 @@ const Footer = () => {
 
   useEffect(() => {
     // Calculate days since start
-    const startDate = new Date('2024-02-01');
+    const startDate = new Date('2025-01-10');
     const calculateDays = () => {
       const today = new Date();
       const diffTime = Math.abs(today.getTime() - startDate.getTime());
