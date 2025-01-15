@@ -51,6 +51,10 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard, t }) => {
     if (solveSudoku(gridCopy)) {
       setGrid(gridCopy);
       toast.success(t.solvedSuccess);
+      // Increment games count when puzzle is solved
+      if (typeof (window as any).incrementGamesCount === 'function') {
+        (window as any).incrementGamesCount();
+      }
     } else {
       toast.error(t.solvedError);
     }
