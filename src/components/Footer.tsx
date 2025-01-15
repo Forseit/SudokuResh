@@ -5,7 +5,7 @@ const Footer = () => {
   const [daysFromStart, setDaysFromStart] = useState(0);
 
   useEffect(() => {
-    const startDate = new Date('2024-02-01'); // Starting from February 1st, 2024
+    const startDate = new Date('2025-01-10'); // Starting from February 1st, 2024
     const calculateDays = () => {
       const today = new Date();
       const diffTime = Math.abs(today.getTime() - startDate.getTime());
@@ -27,14 +27,14 @@ const Footer = () => {
             <div className="flex items-center justify-center gap-2">
               <Users className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">186877</div>
+                <div className="text-2xl font-bold">101</div>
                 <div className="text-sm text-muted-foreground">Пользователей</div>
               </div>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Play className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">3960966</div>
+                <div className="text-2xl font-bold">241</div>
                 <div className="text-sm text-muted-foreground">Игр решено</div>
               </div>
             </div>
