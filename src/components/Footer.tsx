@@ -3,9 +3,13 @@ import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
 
 const Footer = () => {
   const [daysFromStart, setDaysFromStart] = useState(0);
+  const [userCount, setUserCount] = useState(0);
+  const [gamesCount, setGamesCount] = useState(0);
+  const [updatesCount, setUpdatesCount] = useState(11); // Fixed at 11 as requested
 
   useEffect(() => {
-    const startDate = new Date('2025-01-10'); // Starting from February 1st, 2024
+    // Calculate days since start
+    const startDate = new Date('2024-02-01');
     const calculateDays = () => {
       const today = new Date();
       const diffTime = Math.abs(today.getTime() - startDate.getTime());
@@ -14,10 +18,36 @@ const Footer = () => {
     };
 
     calculateDays();
-    const timer = setInterval(calculateDays, 1000 * 60 * 60 * 24); // Update every day
+    const timer = setInterval(calculateDays, 1000 * 60 * 60 * 24);
 
+    // Initialize user count from localStorage or set to 0
+    const storedUserCount = localStorage.getItem('userCount') || '0';
+    setUserCount(parseInt(storedUserCount));
+
+    // If this is a new user (no userCount in localStorage), increment the count
+    if (!localStorage.getItem('userCount')) {
+      const newUserCount = parseInt(storedUserCount) + 1;
+      localStorage.setItem('userCount', newUserCount.toString());
+      setUserCount(newUserCount);
+    }
+
+    // Initialize games count from localStorage
+    const storedGamesCount = localStorage.getItem('gamesCount') || '0';
+    setGamesCount(parseInt(storedGamesCount));
+
+    // Cleanup interval
     return () => clearInterval(timer);
   }, []);
+
+  // Function to increment games count (will be called from SudokuGrid)
+  const incrementGamesCount = () => {
+    const newCount = gamesCount + 1;
+    setGamesCount(newCount);
+    localStorage.setItem('gamesCount', newCount.toString());
+  };
+
+  // Add to window object so it can be called from SudokuGrid
+  (window as any).incrementGamesCount = incrementGamesCount;
 
   return (
     <footer className="mt-auto">
@@ -27,21 +57,21 @@ const Footer = () => {
             <div className="flex items-center justify-center gap-2">
               <Users className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">101</div>
+                <div className="text-2xl font-bold">{userCount}</div>
                 <div className="text-sm text-muted-foreground">Пользователей</div>
               </div>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Play className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">241</div>
+                <div className="text-2xl font-bold">{gamesCount}</div>
                 <div className="text-sm text-muted-foreground">Игр решено</div>
               </div>
             </div>
             <div className="flex items-center justify-center gap-2">
               <RefreshCw className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">11</div>
+                <div className="text-2xl font-bold">{updatesCount}</div>
                 <div className="text-sm text-muted-foreground">Обновлений сделано</div>
               </div>
             </div>
