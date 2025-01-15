@@ -4,10 +4,9 @@ import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
 const Footer = () => {
   const [daysFromStart, setDaysFromStart] = useState(0);
   const [gamesCount, setGamesCount] = useState(144);
-  const [updatesCount, setUpdatesCount] = useState(13); // Fixed at 11 as requested
+  const [updatesCount, setUpdatesCount] = useState(13);
 
   useEffect(() => {
-    // Calculate days since start
     const startDate = new Date('2025-01-10');
     const calculateDays = () => {
       const today = new Date();
@@ -19,23 +18,18 @@ const Footer = () => {
     calculateDays();
     const timer = setInterval(calculateDays, 1000 * 60 * 60 * 24);
 
-
-    // Initialize games count from localStorage
     const storedGamesCount = localStorage.getItem('gamesCount') || '0';
     setGamesCount(parseInt(storedGamesCount));
 
-    // Cleanup interval
     return () => clearInterval(timer);
   }, []);
 
-  // Function to increment games count (will be called from SudokuGrid)
   const incrementGamesCount = () => {
     const newCount = gamesCount + 1;
     setGamesCount(newCount);
     localStorage.setItem('gamesCount', newCount.toString());
   };
 
-  // Add to window object so it can be called from SudokuGrid
   (window as any).incrementGamesCount = incrementGamesCount;
 
   return (
