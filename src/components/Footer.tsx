@@ -3,7 +3,7 @@ import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
 
 const Footer = () => {
   const [daysFromStart, setDaysFromStart] = useState(0);
-  const [gamesCount, setGamesCount] = useState(101);
+  const [gamesCount, setGamesCount] = useState(144);
   const [updatesCount, setUpdatesCount] = useState(13);
 
   useEffect(() => {
