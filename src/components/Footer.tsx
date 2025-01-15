@@ -4,7 +4,7 @@ import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
 const Footer = () => {
   const [daysFromStart, setDaysFromStart] = useState(0);
   const [gamesCount, setGamesCount] = useState(144);
-  const [updatesCount, setUpdatesCount] = useState(11); // Fixed at 11 as requested
+  const [updatesCount, setUpdatesCount] = useState(13); // Fixed at 11 as requested
 
   useEffect(() => {
     // Calculate days since start
