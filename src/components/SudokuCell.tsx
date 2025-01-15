@@ -41,10 +41,10 @@ const SudokuCell: React.FC<SudokuCellProps> = ({
       readOnly={!useKeyboard}
       className={cn(
         "w-10 h-10 text-center text-xl font-semibold border-[1px] border-gray-300",
-        "focus:outline-none",
-        isSelected && "bg-blue-50",
-        !isValid && value !== "" && "text-red-500 bg-red-50",
-        isFlashing && "bg-red-100 transition-colors duration-1000",
+        "focus:outline-none dark:bg-gray-800 dark:text-white",
+        isSelected && "bg-blue-50 dark:bg-blue-900",
+        !isValid && value !== "" && "text-red-500 bg-red-50 dark:bg-red-900",
+        isFlashing && "bg-red-100 dark:bg-red-900 transition-colors duration-1000",
         (col + 1) % 3 === 0 && col !== 8 && "border-r-2 border-r-red-800",
         (row + 1) % 3 === 0 && row !== 8 && "border-b-2 border-b-red-800"
       )}
