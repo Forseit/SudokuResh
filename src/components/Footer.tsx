@@ -3,7 +3,7 @@ import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
 
 const Footer = () => {
   const [daysFromStart, setDaysFromStart] = useState(0);
-  const [gamesCount, setGamesCount] = useState(144);
+  const [gamesCount, setGamesCount] = useState(101);
   const [updatesCount, setUpdatesCount] = useState(13);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const Footer = () => {
             <div className="flex items-center justify-center gap-2">
               <Users className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">144</div>
+                <div className="text-2xl font-bold">101</div>
                 <div className="text-sm text-muted-foreground">Пользователей</div>
               </div>
             </div>
