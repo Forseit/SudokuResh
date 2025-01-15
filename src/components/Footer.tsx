@@ -3,7 +3,6 @@ import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
 
 const Footer = () => {
   const [daysFromStart, setDaysFromStart] = useState(0);
-  const [userCount, setUserCount] = useState(101);
   const [gamesCount, setGamesCount] = useState(144);
   const [updatesCount, setUpdatesCount] = useState(11); // Fixed at 11 as requested
 
@@ -20,16 +19,6 @@ const Footer = () => {
     calculateDays();
     const timer = setInterval(calculateDays, 1000 * 60 * 60 * 24);
 
-    // Initialize user count from localStorage or set to 0
-    const storedUserCount = localStorage.getItem('userCount') || '0';
-    setUserCount(parseInt(storedUserCount));
-
-    // If this is a new user (no userCount in localStorage), increment the count
-    if (!localStorage.getItem('userCount')) {
-      const newUserCount = parseInt(storedUserCount) + 1;
-      localStorage.setItem('userCount', newUserCount.toString());
-      setUserCount(newUserCount);
-    }
 
     // Initialize games count from localStorage
     const storedGamesCount = localStorage.getItem('gamesCount') || '0';
@@ -57,7 +46,7 @@ const Footer = () => {
             <div className="flex items-center justify-center gap-2">
               <Users className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">{userCount}</div>
+                <div className="text-2xl font-bold">144</div>
                 <div className="text-sm text-muted-foreground">Пользователей</div>
               </div>
             </div>
