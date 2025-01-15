@@ -8,9 +8,19 @@ import { X } from 'lucide-react';
 
 interface SudokuGridProps {
   useKeyboard: boolean;
+  t: {
+    title: string;
+    keyboard: string;
+    print: string;
+    solve: string;
+    clear: string;
+    solvedSuccess: string;
+    solvedError: string;
+    gridCleared: string;
+  };
 }
 
-const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard }) => {
+const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard, t }) => {
   const [grid, setGrid] = useState<number[][]>(Array(9).fill(null).map(() => Array(9).fill(0)));
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [invalidCellFlash, setInvalidCellFlash] = useState<{ row: number; col: number } | null>(null);
@@ -23,9 +33,8 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard }) => {
 
   const handleNumberClick = (number: number | null) => {
     if (selectedCell) {
-      if (number === null) { // X button clicked
+      if (number === null) {
         if (grid[selectedCell.row][selectedCell.col] === 0) {
-          // Flash red if cell is already empty
           setInvalidCellFlash(selectedCell);
           setTimeout(() => setInvalidCellFlash(null), 1000);
         } else {
@@ -41,15 +50,15 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard }) => {
     const gridCopy = grid.map(row => [...row]);
     if (solveSudoku(gridCopy)) {
       setGrid(gridCopy);
-      toast.success("Судоку успешно решена!");
+      toast.success(t.solvedSuccess);
     } else {
-      toast.error("Для данной конфигурации решение не существует");
+      toast.error(t.solvedError);
     }
   };
 
   const handleClear = () => {
     setGrid(Array(9).fill(null).map(() => Array(9).fill(0)));
-    toast.info("Сетка очищена");
+    toast.info(t.gridCleared);
   };
 
   return (
@@ -100,14 +109,14 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard }) => {
           onClick={handleSolve}
           className="bg-red-800 hover:bg-red-900 text-white"
         >
-          Решить
+          {t.solve}
         </Button>
         <Button 
           onClick={handleClear}
           variant="outline"
           className="border-red-800 text-red-800 hover:bg-red-50"
         >
-          Очистить
+          {t.clear}
         </Button>
       </div>
     </div>
