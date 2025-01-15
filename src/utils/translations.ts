@@ -13,8 +13,8 @@ export const translations: Translations = {
     print: "Print",
   },
   ru: {
-    title: "Решатель Судоку",
-    keyboard: "Клавиатура",
-    print: "Распечатать",
+    title: "Ебатель Дмитрия",
+    keyboard: "Ебать?",
+    print: "Сделать отсос Дмитрию",
   },
 };
