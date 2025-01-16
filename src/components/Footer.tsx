@@ -48,7 +48,7 @@ const Footer = ({ t }: { t: any }) => {
   };
 
   const calculateDaysFromStart = () => {
-    const startDate = new Date(stats.start_date || '2024-02-01');
+    const startDate = new Date(stats.start_date || '2025-01-10');
     const today = new Date();
     const diffTime = Math.abs(today.getTime() - startDate.getTime());
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
