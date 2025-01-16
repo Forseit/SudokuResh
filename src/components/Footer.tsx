@@ -1,36 +1,58 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from '@/integrations/supabase/types';
+import { useQuery } from '@tanstack/react-query';
 
-const Footer = () => {
-  const [daysFromStart, setDaysFromStart] = useState(0);
-  const [gamesCount, setGamesCount] = useState(144);
-  const [updatesCount, setUpdatesCount] = useState(13);
+type GlobalStats = Database['public']['Tables']['global_stats']['Row'];
 
-  useEffect(() => {
-    const startDate = new Date('2025-01-10');
-    const calculateDays = () => {
-      const today = new Date();
-      const diffTime = Math.abs(today.getTime() - startDate.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      setDaysFromStart(diffDays);
-    };
+const defaultStats: GlobalStats = {
+  id: 1,
+  user_count: 0,
+  games_solved: 0,
+  updates_count: 11,
+  start_date: '2024-02-01'
+};
 
-    calculateDays();
-    const timer = setInterval(calculateDays, 1000 * 60 * 60 * 24);
+const Footer = ({ t }: { t: any }) => {
+  const { data: stats = defaultStats } = useQuery({
+    queryKey: ['global-stats'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('global_stats')
+        .select('*')
+        .maybeSingle();
 
-    const storedGamesCount = localStorage.getItem('gamesCount') || '0';
-    setGamesCount(parseInt(storedGamesCount));
+      if (error) {
+        console.error('Error fetching stats:', error);
+        return defaultStats;
+      }
 
-    return () => clearInterval(timer);
+      return data || defaultStats;
+    },
+    initialData: defaultStats
+  });
+
+  // Check if this is a new user
+  React.useEffect(() => {
+    const hasVisited = localStorage.getItem('hasVisited');
+    if (!hasVisited) {
+      localStorage.setItem('hasVisited', 'true');
+      incrementUserCount();
+    }
   }, []);
 
-  const incrementGamesCount = () => {
-    const newCount = gamesCount + 1;
-    setGamesCount(newCount);
-    localStorage.setItem('gamesCount', newCount.toString());
+  const incrementUserCount = async () => {
+    const { error } = await supabase.rpc('increment_user_count');
+    if (error) console.error('Error incrementing user count:', error);
   };
 
-  (window as any).incrementGamesCount = incrementGamesCount;
+  const calculateDaysFromStart = () => {
+    const startDate = new Date(stats.start_date || '2024-02-01');
+    const today = new Date();
+    const diffTime = Math.abs(today.getTime() - startDate.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
 
   return (
     <footer className="mt-auto">
@@ -40,29 +62,29 @@ const Footer = () => {
             <div className="flex items-center justify-center gap-2">
               <Users className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">101</div>
-                <div className="text-sm text-muted-foreground">Пользователей</div>
+                <div className="text-2xl font-bold">{stats.user_count}</div>
+                <div className="text-sm text-muted-foreground">{t.users}</div>
               </div>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Play className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">{gamesCount}</div>
-                <div className="text-sm text-muted-foreground">Игр решено</div>
+                <div className="text-2xl font-bold">{stats.games_solved}</div>
+                <div className="text-sm text-muted-foreground">{t.gamesSolved}</div>
               </div>
             </div>
             <div className="flex items-center justify-center gap-2">
               <RefreshCw className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">{updatesCount}</div>
-                <div className="text-sm text-muted-foreground">Обновлений сделано</div>
+                <div className="text-2xl font-bold">{stats.updates_count}</div>
+                <div className="text-sm text-muted-foreground">{t.updatesReleased}</div>
               </div>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Calendar className="h-6 w-6" />
               <div>
-                <div className="text-2xl font-bold">{daysFromStart}</div>
-                <div className="text-sm text-muted-foreground">Дней с открытия</div>
+                <div className="text-2xl font-bold">{calculateDaysFromStart()}</div>
+                <div className="text-sm text-muted-foreground">{t.daysFromStart}</div>
               </div>
             </div>
           </div>
@@ -72,7 +94,7 @@ const Footer = () => {
         <div className="container mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">SudokuResh</h2>
           <p className="text-muted-foreground mb-4">
-            Почта для связи: dkorostelev1308@gmail.com
+            {t.contactEmail}: dkorostelev1308@gmail.com
           </p>
           <p className="text-sm text-muted-foreground">
             Copyright © SudokuResh 2025
