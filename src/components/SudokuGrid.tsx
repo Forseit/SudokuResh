@@ -5,6 +5,7 @@ import { isValidCell } from '../utils/validation';
 import { solveSudoku } from '../utils/sudokuSolver';
 import { toast } from 'sonner';
 import { X } from 'lucide-react';
+import { incrementGameCount } from '../utils/incrementGameCount';
 
 interface SudokuGridProps {
   useKeyboard: boolean;
@@ -46,15 +47,13 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard, t }) => {
     }
   };
 
-  const handleSolve = () => {
+  const handleSolve = async () => {
     const gridCopy = grid.map(row => [...row]);
     if (solveSudoku(gridCopy)) {
       setGrid(gridCopy);
       toast.success(t.solvedSuccess);
       // Increment games count when puzzle is solved
-      if (typeof (window as any).incrementGamesCount === 'function') {
-        (window as any).incrementGamesCount();
-      }
+      await incrementGameCount();
     } else {
       toast.error(t.solvedError);
     }
