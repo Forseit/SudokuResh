@@ -8,6 +8,11 @@ type Translations = {
     solvedSuccess: string;
     solvedError: string;
     gridCleared: string;
+    users: string;
+    gamesSolved: string;
+    updatesReleased: string;
+    daysFromStart: string;
+    contactEmail: string;
   };
 };
 
@@ -20,7 +25,12 @@ export const translations: Translations = {
     clear: "Clear",
     solvedSuccess: "Sudoku solved successfully!",
     solvedError: "No solution exists for this configuration",
-    gridCleared: "Grid cleared"
+    gridCleared: "Grid cleared",
+    users: "Users",
+    gamesSolved: "Games Solved",
+    updatesReleased: "Updates Released",
+    daysFromStart: "Days Since Launch",
+    contactEmail: "Contact Email"
   },
   ru: {
     title: "Решатель Судоку",
@@ -30,6 +40,11 @@ export const translations: Translations = {
     clear: "Очистить",
     solvedSuccess: "Судоку успешно решена!",
     solvedError: "Для данной конфигурации решение не существует",
-    gridCleared: "Сетка очищена"
+    gridCleared: "Сетка очищена",
+    users: "Пользователей",
+    gamesSolved: "Игр решено",
+    updatesReleased: "Обновлений сделано",
+    daysFromStart: "Дней с открытия",
+    contactEmail: "Почта для связи"
   },
 };
