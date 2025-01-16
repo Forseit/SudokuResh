@@ -11,7 +11,7 @@ const defaultStats: GlobalStats = {
   user_count: 0,
   games_solved: 0,
   updates_count: 11,
-  start_date: '2024-02-01'
+  start_date: '2025-01-10'
 };
 
 const Footer = ({ t }: { t: any }) => {
