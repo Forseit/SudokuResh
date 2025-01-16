@@ -80,7 +80,7 @@ const Index = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer t={t} />
     </div>
   );
 };
