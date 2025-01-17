@@ -102,9 +102,9 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard, t }) => {
           // Draw the original favicon
           ctx.drawImage(img, 0, 0, 32, 32);
           
-          // Draw a red dot in the top-right corner
+          // Draw a larger red dot in the top-right corner
           ctx.beginPath();
-          ctx.arc(24, 8, 4, 0, 2 * Math.PI);
+          ctx.arc(26, 6, 10, 0, 2 * Math.PI);
           ctx.fillStyle = '#FF0000';
           ctx.fill();
           
