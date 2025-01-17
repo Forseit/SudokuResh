@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SudokuCell from './SudokuCell';
 import { Button } from "@/components/ui/button";
 import { isValidCell } from '../utils/validation';
@@ -78,6 +78,46 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard, t }) => {
     setGrid(Array(9).fill(null).map(() => Array(9).fill(0)));
     toast.info(t.gridCleared);
   };
+
+  // Check for invalid cells and update favicon
+  useEffect(() => {
+    const hasInvalidCells = grid.some((row, rowIndex) => 
+      row.some((cell, colIndex) => 
+        cell !== 0 && !isValidCell(grid, rowIndex, colIndex, cell)
+      )
+    );
+
+    const favicon = document.getElementById('favicon') as HTMLLinkElement;
+    if (hasInvalidCells) {
+      // Create a canvas to draw the favicon with a red dot
+      const canvas = document.createElement('canvas');
+      canvas.width = 32;
+      canvas.height = 32;
+      const ctx = canvas.getContext('2d');
+      
+      if (ctx) {
+        // Load the original favicon
+        const img = new Image();
+        img.onload = () => {
+          // Draw the original favicon
+          ctx.drawImage(img, 0, 0, 32, 32);
+          
+          // Draw a red dot in the top-right corner
+          ctx.beginPath();
+          ctx.arc(24, 8, 4, 0, 2 * Math.PI);
+          ctx.fillStyle = '#FF0000';
+          ctx.fill();
+          
+          // Update the favicon
+          favicon.href = canvas.toDataURL('image/png');
+        };
+        img.src = '/favicon.ico';
+      }
+    } else {
+      // Reset to original favicon
+      favicon.href = '/favicon.ico';
+    }
+  }, [grid]);
 
   return (
     <div className="flex flex-col items-center gap-6">
