@@ -6,6 +6,10 @@ import { solveSudoku } from '../utils/sudokuSolver';
 import { toast } from 'sonner';
 import { X } from 'lucide-react';
 import { incrementGameCount } from '../utils/incrementGameCount';
+import { useQueryClient } from '@tanstack/react-query';
+import type { Database } from '@/integrations/supabase/types';
+
+type GlobalStats = Database['public']['Tables']['global_stats']['Row'];
 
 interface SudokuGridProps {
   useKeyboard: boolean;
@@ -25,6 +29,7 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard, t }) => {
   const [grid, setGrid] = useState<number[][]>(Array(9).fill(null).map(() => Array(9).fill(0)));
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [invalidCellFlash, setInvalidCellFlash] = useState<{ row: number; col: number } | null>(null);
+  const queryClient = useQueryClient();
 
   const handleCellChange = (row: number, col: number, value: string) => {
     const newGrid = grid.map(r => [...r]);
@@ -52,7 +57,17 @@ const SudokuGrid: React.FC<SudokuGridProps> = ({ useKeyboard, t }) => {
     if (solveSudoku(gridCopy)) {
       setGrid(gridCopy);
       toast.success(t.solvedSuccess);
-      // Increment games count when puzzle is solved
+      
+      // Optimistically update the games solved count
+      const currentStats = queryClient.getQueryData(['global-stats']) as GlobalStats;
+      if (currentStats) {
+        queryClient.setQueryData(['global-stats'], {
+          ...currentStats,
+          games_solved: (currentStats.games_solved || 0) + 1
+        });
+      }
+      
+      // Update the database
       await incrementGameCount();
     } else {
       toast.error(t.solvedError);
