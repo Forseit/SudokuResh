@@ -2,7 +2,7 @@ import React from 'react';
 import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from '@/integrations/supabase/types';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 type GlobalStats = Database['public']['Tables']['global_stats']['Row'];
 
@@ -11,10 +11,12 @@ const defaultStats: GlobalStats = {
   user_count: 0,
   games_solved: 0,
   updates_count: 11,
-  start_date: '2025-01-10'
+  start_date: '2024-02-01'
 };
 
 const Footer = ({ t }: { t: any }) => {
+  const queryClient = useQueryClient();
+
   const { data: stats = defaultStats } = useQuery({
     queryKey: ['global-stats'],
     queryFn: async () => {
@@ -47,8 +49,32 @@ const Footer = ({ t }: { t: any }) => {
     if (error) console.error('Error incrementing user count:', error);
   };
 
+  // Subscribe to game count updates
+  React.useEffect(() => {
+    const channel = supabase
+      .channel('game_count_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'global_stats',
+          filter: 'id=eq.1'
+        },
+        (payload) => {
+          // Update the cache when we receive real-time updates
+          queryClient.setQueryData(['global-stats'], payload.new);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
   const calculateDaysFromStart = () => {
-    const startDate = new Date(stats.start_date || '2025-01-10');
+    const startDate = new Date(stats.start_date || '2024-02-01');
     const today = new Date();
     const diffTime = Math.abs(today.getTime() - startDate.getTime());
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
