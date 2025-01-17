@@ -10,8 +10,8 @@ const defaultStats: GlobalStats = {
   id: 1,
   user_count: 0,
   games_solved: 0,
-  updates_count: 11,
-  start_date: '2024-02-01'
+  updates_count: 14,
+  start_date: '2025-01-10'
 };
 
 const Footer = ({ t }: { t: any }) => {
@@ -74,7 +74,7 @@ const Footer = ({ t }: { t: any }) => {
   }, [queryClient]);
 
   const calculateDaysFromStart = () => {
-    const startDate = new Date(stats.start_date || '2024-02-01');
+    const startDate = new Date(stats.start_date || '2025-01-10');
     const today = new Date();
     const diffTime = Math.abs(today.getTime() - startDate.getTime());
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
