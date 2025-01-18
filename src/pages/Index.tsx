@@ -70,7 +70,7 @@ const Index = () => {
               className={useKeyboard ? "bg-primary text-primary-foreground" : ""}
             >
               <Keyboard className="mr-2 h-4 w-4" />
-              {t.keyboard} {useKeyboard ? "ON" : "OFF"}
+              {t.keyboard} {useKeyboard ? "OFF" : "ON"}
             </Button>
             
             <Button variant="outline" onClick={handlePrint}>
