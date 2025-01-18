@@ -121,7 +121,7 @@ const Footer = ({ t }: { t: any }) => {
         <div className="container mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">SudokuResh</h2>
           <p className="text-muted-foreground mb-4">
-            {t.contactEmail}: dkorostelev1308@gmail.com
+            {t.contactEmail}: admin@sudokuresh.ru
           </p>
           <p className="text-sm text-muted-foreground">
             Copyright © SudokuResh 2025
