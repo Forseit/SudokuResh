@@ -10,7 +10,7 @@ const defaultStats: GlobalStats = {
   id: 1,
   user_count: 0,
   games_solved: 0,
-  updates_count: 15,
+  updates_count: 32,
   start_date: '2025-01-10'
 };
 
