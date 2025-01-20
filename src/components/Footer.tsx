@@ -1,8 +1,9 @@
 import React from 'react';
-import { Users, Play, RefreshCw, Calendar } from 'lucide-react';
+import { Users, Play, RefreshCw, Calendar, Navigation, MessageSquare } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from '@/integrations/supabase/types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 
 type GlobalStats = Database['public']['Tables']['global_stats']['Row'];
 
@@ -10,10 +11,9 @@ const defaultStats: GlobalStats = {
   id: 1,
   user_count: 0,
   games_solved: 0,
-  updates_count: 32,
-  start_date: '2025-01-10'
+  updates_count: 11,
+  start_date: '2024-02-01'
 };
-
 
 const Footer = ({ t }: { t: any }) => {
   const queryClient = useQueryClient();
@@ -75,7 +75,7 @@ const Footer = ({ t }: { t: any }) => {
   }, [queryClient]);
 
   const calculateDaysFromStart = () => {
-    const startDate = new Date(stats.start_date || '2025-01-10');
+    const startDate = new Date(stats.start_date || '2024-02-01');
     const today = new Date();
     const diffTime = Math.abs(today.getTime() - startDate.getTime());
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -120,8 +120,18 @@ const Footer = ({ t }: { t: any }) => {
       <div className="bg-muted py-6">
         <div className="container mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">SudokuResh</h2>
+          <div className="flex flex-col items-center gap-2 mb-4">
+            <div className="flex items-center gap-2">
+              <Navigation className="h-4 w-4" />
+              <span className="font-medium text-foreground">Навигация</span>
+            </div>
+            <Link to="/reviews" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+              <MessageSquare className="h-4 w-4" />
+              <span>Отзывы</span>
+            </Link>
+          </div>
           <p className="text-muted-foreground mb-4">
-            {t.contactEmail}: admin@sudokuresh.ru
+            {t.contactEmail}: dkorostelev1308@gmail.com
           </p>
           <p className="text-sm text-muted-foreground">
             Copyright © SudokuResh 2025
