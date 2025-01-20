@@ -74,7 +74,22 @@ const Reviews = () => {
         .delete()
         .eq("id", id);
 
-      if (error) throw error;
+      if (error) {
+        if (error.code === "42501") {
+          toast({
+            variant: "destructive",
+            title: "Ошибка",
+            description: "У вас нет прав для удаления отзывов",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Ошибка",
+            description: "Не удалось удалить отзыв",
+          });
+        }
+        return;
+      }
 
       toast({
         title: "Успешно",
