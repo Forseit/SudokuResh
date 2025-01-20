@@ -33,6 +33,48 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          name: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          name?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          name?: string | null
+        }
+        Relationships: []
+      }
+      theme_colors: {
+        Row: {
+          dark_theme_color: string
+          id: number
+          light_theme_color: string
+        }
+        Insert: {
+          dark_theme_color?: string
+          id?: number
+          light_theme_color?: string
+        }
+        Update: {
+          dark_theme_color?: string
+          id?: number
+          light_theme_color?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -45,6 +87,10 @@ export type Database = {
       increment_user_count: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      is_admin_ip: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
