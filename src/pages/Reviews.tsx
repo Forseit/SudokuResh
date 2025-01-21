@@ -11,7 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { ArrowLeft, User } from "lucide-react";
 import axios from "axios";
-import VKAuth from 'src/components/VKAuth.tsx';
+import VKAuth from './components/VKAuth'; // без расширения
+
 
 interface VKUser {
   first_name: string;
