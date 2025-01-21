@@ -40,9 +40,6 @@ export type Database = {
           id: string
           is_anonymous: boolean | null
           name: string | null
-          user_ip: string | null
-          vk_profile_photo: string | null
-          vk_user_id: string | null
         }
         Insert: {
           content: string
@@ -50,9 +47,6 @@ export type Database = {
           id?: string
           is_anonymous?: boolean | null
           name?: string | null
-          user_ip?: string | null
-          vk_profile_photo?: string | null
-          vk_user_id?: string | null
         }
         Update: {
           content?: string
@@ -60,9 +54,6 @@ export type Database = {
           id?: string
           is_anonymous?: boolean | null
           name?: string | null
-          user_ip?: string | null
-          vk_profile_photo?: string | null
-          vk_user_id?: string | null
         }
         Relationships: []
       }
@@ -96,10 +87,6 @@ export type Database = {
       increment_user_count: {
         Args: Record<PropertyKey, never>
         Returns: undefined
-      }
-      is_admin_ip: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
       }
     }
     Enums: {
