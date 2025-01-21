@@ -7,12 +7,21 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, User } from "lucide-react";
+import { VKAuth } from "@/components/VKAuth";
+
+interface VKUserData {
+  first_name: string;
+  last_name: string;
+  avatar_url: string;
+  vk_user_id: string;
+}
 
 const Reviews = () => {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [vkUser, setVKUser] = useState<VKUserData | null>(null);
   const { toast } = useToast();
 
   const { data: reviews = [], refetch } = useQuery({
@@ -27,6 +36,11 @@ const Reviews = () => {
       return data;
     },
   });
+
+  const handleVKAuth = (userData: VKUserData) => {
+    setVKUser(userData);
+    setName(`${userData.first_name} ${userData.last_name}`);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +59,8 @@ const Reviews = () => {
         name: isAnonymous ? null : name,
         content,
         is_anonymous: isAnonymous,
+        vk_user_id: vkUser?.vk_user_id,
+        vk_profile_photo: vkUser?.avatar_url,
       });
 
       if (error) throw error;
@@ -54,7 +70,6 @@ const Reviews = () => {
         description: "Ваш отзыв успешно добавлен",
       });
 
-      setName("");
       setContent("");
       setIsAnonymous(false);
       refetch();
@@ -83,13 +98,25 @@ const Reviews = () => {
         <div className="grid gap-8 md:grid-cols-2">
           <div>
             <h2 className="text-xl font-semibold mb-4">Оставить отзыв</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isAnonymous && (
+            {!vkUser && <VKAuth onAuth={handleVKAuth} />}
+            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              {!isAnonymous && !vkUser && (
                 <Input
                   placeholder="Ваше имя"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
+              )}
+              {vkUser && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <img
+                    src={vkUser.avatar_url}
+                    alt="VK Profile"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <span>{vkUser.first_name} {vkUser.last_name}</span>
+                  <User className="h-4 w-4" />
+                </div>
               )}
               <Textarea
                 placeholder="Ваш отзыв"
@@ -123,8 +150,36 @@ const Reviews = () => {
                   key={review.id}
                   className="p-4 rounded-lg border bg-card text-card-foreground"
                 >
-                  <div className="font-medium mb-2">
-                    {review.is_anonymous ? "Анонимно" : review.name || "Гость"}
+                  <div className="flex items-center gap-2 mb-2">
+                    {review.vk_profile_photo ? (
+                      <>
+                        <img
+                          src={review.vk_profile_photo}
+                          alt="VK Profile"
+                          className="w-6 h-6 rounded-full"
+                        />
+                        <a
+                          href={`https://vk.com/id${review.vk_user_id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium hover:underline flex items-center gap-1"
+                        >
+                          {review.name}
+                          <User className="h-4 w-4" />
+                        </a>
+                      </>
+                    ) : (
+                      <div>
+                        <span className="font-medium">
+                          {review.is_anonymous ? "Анонимно" : review.name || "Гость"}
+                        </span>
+                        {!review.is_anonymous && !review.vk_user_id && (
+                          <span className="text-sm text-muted-foreground ml-2">
+                            Не авторизован
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <p className="text-muted-foreground">{review.content}</p>
                   <div className="text-xs text-muted-foreground mt-2">
