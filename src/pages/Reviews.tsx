@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { ArrowLeft, User } from "lucide-react";
-import { VKAuth } from "@/components/VKAuth";
+import VKAuth from "@/components/VKAuth";
 
 interface VKUserData {
   first_name: string;
