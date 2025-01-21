@@ -22,18 +22,21 @@ export const VKAuth = ({ onAuth }: VKAuthProps) => {
 
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://unpkg.com/@vkid/sdk@3.0.0/dist-sdk/umd/index.js';
+    script.src = 'https://unpkg.com/@vkid/sdk@<3.0.0/dist-sdk/umd/index.js';
     script.async = true;
     script.onload = () => {
       if ('VKIDSDK' in window && containerRef.current) {
         const VKID = window.VKIDSDK;
+    script type="text/javascript";
+      if ('VKIDSDK' in window) {
+        const VKID = window.VKIDSDK;
 
-        VKID.Config.init({
-          app: 52942639,
-          redirectUrl: 'https://sudokuresh.ru/reviews',
-          responseMode: 'callback',
-          source: 'LOWCODE',
-        });
+      VKID.Config.init({
+        app: 52942639,
+        redirectUrl: 'https://sudokuresh.ru/reviews',
+        responseMode: VKID.ConfigResponseMode.Callback,
+        source: VKID.ConfigSource.LOWCODE,
+      });
 
         const oneTap = new VKID.OneTap();
 
@@ -53,11 +56,11 @@ export const VKAuth = ({ onAuth }: VKAuthProps) => {
         };
 
         oneTap.render({
-          container: containerRef.current,
+          container: document.currentScript.parentElement,
           showAlternativeLogin: true
         })
         .on(VKID.WidgetEvents.ERROR, vkidOnError)
-        .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, (payload: any) => {
+        .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, function (payload) {
           const code = payload.code;
           const deviceId = payload.device_id;
 
