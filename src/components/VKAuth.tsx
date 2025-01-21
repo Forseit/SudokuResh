@@ -37,40 +37,28 @@ const VKAuth = ({ onAuth }: VKAuthProps) => {
         const oneTap = new VKIDSDK.OneTap();
         oneTap.render({ container: containerRef.current });
 
-        oneTap.on(VKIDSDK.WidgetEvents.ERROR, vkidOnError);
+        oneTap.on(VKIDSDK.WidgetEvents.ERROR, (error: any) => {
+          console.error('VK Auth Error:', error);
+          setIsLoading(false);
+        });
+
         oneTap.on(VKIDSDK.OneTapInternalEvents.LOGIN_SUCCESS, function (payload) {
           const { code, device_id: deviceId } = payload;
           VKIDSDK.Auth.exchangeCode(code, deviceId)
-            .then(vkidOnSuccess)
-            .catch(vkidOnError);
+            .then((data: any) => {
+              onAuth({
+                first_name: data.user.first_name,
+                last_name: data.user.last_name,
+                avatar_url: data.user.avatar_url,
+                vk_user_id: data.user.id.toString(),
+              });
+              setIsLoading(false);
+            })
+            .catch((error: any) => {
+              console.error('VK Auth Error:', error);
+              setIsLoading(false);
+            });
         });
-
-        function vkidOnSuccess(data: any) {
-          onAuth({
-            first_name: data.user.first_name,
-            last_name: data.user.last_name,
-            avatar_url: data.user.avatar_url,
-            vk_user_id: data.user.id.toString(),
-          });
-          setIsLoading(false);
-        }
-
-        function vkidOnError(error: any) {
-          console.error('VK Auth Error:', error);
-          setIsLoading(false);
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const deviceId = urlParams.get('device_id');
-        const responseType = urlParams.get('type');
-
-        if (deviceId && code && responseType === 'code_v2') {
-          VKIDSDK.Auth.exchangeCode(code, deviceId)
-            .then((result) => VKIDSDK.Auth.userInfo(result.access_token))
-            .then(vkidOnSuccess)
-            .catch(vkidOnError);
-        }
       }
     };
 
@@ -85,15 +73,17 @@ const VKAuth = ({ onAuth }: VKAuthProps) => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {isLoading && (
+      {isLoading ? (
         <div className="flex items-center gap-2 text-muted-foreground">
           <User className="h-5 w-5" />
           Загрузка VK ID...
         </div>
+      ) : (
+        <div ref={containerRef} />
       )}
-      <div ref={containerRef} />
     </div>
   );
 };
 
 export default VKAuth;
+
