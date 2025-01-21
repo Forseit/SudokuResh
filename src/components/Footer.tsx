@@ -131,7 +131,7 @@ const Footer = ({ t }: { t: any }) => {
             </Link>
           </div>
           <p className="text-muted-foreground mb-4">
-            {t.contactEmail}: dkorostelev1308@gmail.com
+            {t.contactEmail}: admin@sudokuresh.ru
           </p>
           <p className="text-sm text-muted-foreground">
             Copyright © SudokuResh 2025
