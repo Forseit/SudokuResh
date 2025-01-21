@@ -1,88 +1,196 @@
-import { useEffect, useRef, useState } from "react";
-import { User } from "lucide-react";
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
-declare global {
-  interface Window {
-    VKIDSDK: any;
+export type Database = {
+  public: {
+    Tables: {
+      global_stats: {
+        Row: {
+          games_solved: number | null
+          id: number
+          start_date: string | null
+          updates_count: number | null
+          user_count: number | null
+        }
+        Insert: {
+          games_solved?: number | null
+          id?: number
+          start_date?: string | null
+          updates_count?: number | null
+          user_count?: number | null
+        }
+        Update: {
+          games_solved?: number | null
+          id?: number
+          start_date?: string | null
+          updates_count?: number | null
+          user_count?: number | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          name: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          name?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          name?: string | null
+        }
+        Relationships: []
+      }
+      theme_colors: {
+        Row: {
+          dark_theme_color: string
+          id: number
+          light_theme_color: string
+        }
+        Insert: {
+          dark_theme_color?: string
+          id?: number
+          light_theme_color?: string
+        }
+        Update: {
+          dark_theme_color?: string
+          id?: number
+          light_theme_color?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      increment_game_count: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      increment_user_count: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }
 
-type VKAuthProps = {
-  onAuth: (userData: { 
-    firstName: string;
-    lastName: string;
-    photo: string;
-    userId: string;
-  }) => void;
-};
+type PublicSchema = Database[Extract<keyof Database, "public">]
 
-export const VKAuth = ({ onAuth }: VKAuthProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://id.vk.com/js/sdk/1.1.0/vkid.js";
-    script.async = true;
-    script.onload = () => setScriptLoaded(true);
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (scriptLoaded && containerRef.current && window.VKIDSDK) {
-      const oneTap = new window.VKIDSDK.OneTap({
-        app: 52942639,
-        redirectUrl: window.location.origin + "/reviews",
-        responseType: "code",
-        source: "LOWCODE",
-      });
-
-      const vkidOnSuccess = (data: any) => {
-        onAuth({
-          firstName: data.first_name,
-          lastName: data.last_name,
-          photo: data.photo_max,
-          userId: data.id,
-        });
-      };
-
-      const vkidOnError = (error: any) => {
-        console.error("VK Auth Error:", error);
-      };
-
-      oneTap.render({
-        container: containerRef.current,
-        showAlternativeLogin: true,
-        styles: {
-          borderRadius: 16,
-          width: 285,
-        },
-      })
-      .on(window.VKIDSDK.WidgetEvents.ERROR, vkidOnError)
-      .on(window.VKIDSDK.OneTapInternalEvents.LOGIN_SUCCESS, function (payload: any) {
-        const code = payload.code;
-        const deviceId = payload.device_id;
-
-        window.VKIDSDK.Auth.exchangeCode(code, deviceId)
-          .then(vkidOnSuccess)
-          .catch(vkidOnError);
-      });
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
     }
-  }, [scriptLoaded, onAuth]);
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
 
-  return (
-    <div className="flex items-center justify-center">
-      <div ref={containerRef} className="mb-4" />
-      {!scriptLoaded && (
-        <div className="flex items-center gap-2 p-4 rounded-lg border bg-muted">
-          <User className="w-5 h-5" />
-          <span>Загрузка кнопки авторизации ВКонтакте...</span>
-        </div>
-      )}
-    </div>
-  );
-};
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
