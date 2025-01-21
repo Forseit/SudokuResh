@@ -38,9 +38,10 @@ export const VKAuth = ({ onAuth }: VKAuthProps) => {
 
       VKID.Config.init({
         app: 52942639,
-        redirectUrl: window.location.origin + '/reviews',
+        redirectUrl: 'https://sudokuresh.ru/reviews',
         responseMode: VKID.ConfigResponseMode.Callback,
         source: VKID.ConfigSource.LOWCODE,
+        scope: '',
       });
 
       const oneTap = new VKID.OneTap();
