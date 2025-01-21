@@ -22,7 +22,7 @@ export const VKAuth = ({ onAuth }: VKAuthProps) => {
 
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://unpkg.com/@vkid/sdk@1.1.0/dist-sdk/umd/index.js';
+    script.src = 'https://unpkg.com/@vkid/sdk@3.0.0/dist-sdk/umd/index.js';
     script.async = true;
     script.onload = () => {
       if ('VKIDSDK' in window && containerRef.current) {
@@ -32,40 +32,39 @@ export const VKAuth = ({ onAuth }: VKAuthProps) => {
           app: 52942639,
           redirectUrl: 'https://sudokuresh.ru/reviews',
           responseMode: 'callback',
-          source: 'lowcode',
+          source: 'LOWCODE',
         });
 
         const oneTap = new VKID.OneTap();
 
-        oneTap.render({
-          container: containerRef.current,
-          showAlternativeLogin: true,
-        })
-        .on(VKID.WidgetEvents.ERROR, (error: any) => {
+        const vkidOnSuccess = (data: any) => {
+          onAuth({
+            first_name: data.user.first_name,
+            last_name: data.user.last_name,
+            avatar_url: data.user.avatar_url,
+            vk_user_id: data.user.id.toString()
+          });
+          setIsLoading(false);
+        };
+
+        const vkidOnError = (error: any) => {
           console.error('VK Auth Error:', error);
           setIsLoading(false);
+        };
+
+        oneTap.render({
+          container: containerRef.current,
+          showAlternativeLogin: true
         })
+        .on(VKID.WidgetEvents.ERROR, vkidOnError)
         .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, (payload: any) => {
           const code = payload.code;
           const deviceId = payload.device_id;
 
           VKID.Auth.exchangeCode(code, deviceId)
-            .then((data: any) => {
-              onAuth({
-                first_name: data.user.first_name,
-                last_name: data.user.last_name,
-                avatar_url: data.user.avatar_url,
-                vk_user_id: data.user.id.toString()
-              });
-              setIsLoading(false);
-            })
-            .catch((error: any) => {
-              console.error('VK Auth Exchange Error:', error);
-              setIsLoading(false);
-            });
+            .then(vkidOnSuccess)
+            .catch(vkidOnError);
         });
-
-        setIsLoading(false);
       }
     };
 
