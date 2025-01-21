@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const Reviews = () => {
   const [name, setName] = useState("");
@@ -67,29 +67,6 @@ const Reviews = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from("reviews")
-        .delete()
-        .eq("id", id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Успешно",
-        description: "Отзыв удален",
-      });
-      refetch();
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Ошибка",
-        description: "Не удалось удалить отзыв",
-      });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -144,16 +121,8 @@ const Reviews = () => {
               {reviews.map((review) => (
                 <div
                   key={review.id}
-                  className="p-4 rounded-lg border bg-card text-card-foreground relative"
+                  className="p-4 rounded-lg border bg-card text-card-foreground"
                 >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2"
-                    onClick={() => handleDelete(review.id)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
                   <div className="font-medium mb-2">
                     {review.is_anonymous ? "Анонимно" : review.name || "Гость"}
                   </div>
