@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,108 +7,142 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ArrowLeft, User } from "lucide-react";
-import axios from "axios";
-import VKAuth from './components/VKAuth'; // без расширения
-
-
-interface VKUser {
-  first_name: string;
-  last_name: string;
-  avatar_url: string;
-  vk_user_id: string;
-}
+import { ArrowLeft } from "lucide-react";
 
 const Reviews = () => {
-  const [vkUser, setVkUser] = useState<VKUser | null>(null);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [content, setContent] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = async () => {
-    if (!message.trim() || (!name.trim() && !isAnonymous)) {
-      alert("Пожалуйста, заполните все обязательные поля.");
+  const { data: reviews = [], refetch } = useQuery({
+    queryKey: ["reviews"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!content.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Ошибка",
+        description: "Пожалуйста, введите текст отзыва",
+      });
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      await axios.post("/api/reviews", {
-        name: isAnonymous ? "Аноним" : vkUser?.first_name + " " + vkUser?.last_name || name,
-        email,
-        message,
+      const { error } = await supabase.from("reviews").insert({
+        name: isAnonymous ? null : name,
+        content,
+        is_anonymous: isAnonymous,
       });
 
-      alert("Ваш отзыв успешно отправлен!");
+      if (error) throw error;
+
+      toast({
+        title: "Успешно",
+        description: "Ваш отзыв успешно добавлен",
+      });
+
       setName("");
-      setEmail("");
-      setMessage("");
+      setContent("");
       setIsAnonymous(false);
+      refetch();
     } catch (error) {
-      console.error("Ошибка при отправке отзыва:", error);
-      alert("Не удалось отправить отзыв. Попробуйте еще раз позже.");
-    } finally {
-      setIsLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Ошибка",
+        description: "Не удалось добавить отзыв",
+      });
     }
   };
 
   return (
-    <div className="flex flex-col gap-4 max-w-md mx-auto mt-8">
-      {!vkUser && (
-        <VKAuth
-          onAuth={(user) => {
-            setVkUser(user);
-          }}
-        />
-      )}
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Вернуться к игре
+        </Link>
 
-      {vkUser && (
-        <div className="flex items-center gap-2 text-muted-foreground">
-          <img
-            src={vkUser.avatar_url}
-            alt="VK Profile"
-            className="w-8 h-8 rounded-full"
-          />
-          <span>{vkUser.first_name} {vkUser.last_name}</span>
+        <h1 className="text-3xl font-bold mb-8">Отзывы</h1>
+
+        <div className="grid gap-8 md:grid-cols-2">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Оставить отзыв</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {!isAnonymous && (
+                <Input
+                  placeholder="Ваше имя"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              )}
+              <Textarea
+                placeholder="Ваш отзыв"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="min-h-[120px]"
+                required
+              />
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="anonymous"
+                  checked={isAnonymous}
+                  onCheckedChange={(checked) => setIsAnonymous(checked === true)}
+                />
+                <label
+                  htmlFor="anonymous"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Анонимно
+                </label>
+              </div>
+              <Button type="submit">Отправить отзыв</Button>
+            </form>
+          </div>
+
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Все отзывы</h2>
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="p-4 rounded-lg border bg-card text-card-foreground"
+                >
+                  <div className="font-medium mb-2">
+                    {review.is_anonymous ? "Анонимно" : review.name || "Гость"}
+                  </div>
+                  <p className="text-muted-foreground">{review.content}</p>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    {new Date(review.created_at!).toLocaleDateString("ru-RU", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </div>
+                </div>
+              ))}
+              {reviews.length === 0 && (
+                <p className="text-muted-foreground">Пока нет отзывов</p>
+              )}
+            </div>
+          </div>
         </div>
-      )}
-
-      {!isAnonymous && !vkUser && (
-        <Input
-          placeholder="Ваше имя"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      )}
-
-      <Input
-        placeholder="Ваш email (необязательно)"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <Textarea
-        placeholder="Ваш отзыв"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="anonymous"
-          checked={isAnonymous}
-          onChange={(e) => setIsAnonymous(e.target.checked)}
-        />
-        <label htmlFor="anonymous">Оставить отзыв анонимно</label>
       </div>
-
-      <Button onClick={handleSubmit} disabled={isLoading}>
-        {isLoading ? "Отправка..." : "Отправить отзыв"}
-      </Button>
     </div>
   );
 };
