@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { User } from 'lucide-react';
-export default VKAuth;
 
 declare global {
   interface Window {
@@ -61,7 +60,6 @@ const VKAuth = ({ onAuth }: VKAuthProps) => {
           setIsLoading(false);
         }
 
-        // Handle query parameters for authentication
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         const deviceId = urlParams.get('device_id');
