@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { User } from 'lucide-react';
+export default VKAuth;
 
 declare global {
   interface Window {
