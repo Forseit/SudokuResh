@@ -24,57 +24,59 @@ export const VKAuth = ({ onAuth }: VKAuthProps) => {
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/@vkid/sdk@1.1.0/dist-sdk/umd/index.js';
     script.async = true;
-    script.onload = initVK;
+    script.onload = () => {
+      if ('VKIDSDK' in window && containerRef.current) {
+        const VKID = window.VKIDSDK;
+
+        VKID.Config.init({
+          app: 52942639,
+          redirectUrl: 'https://sudokuresh.ru/reviews',
+          responseMode: 'callback',
+          source: 'lowcode',
+        });
+
+        const oneTap = new VKID.OneTap();
+
+        oneTap.render({
+          container: containerRef.current,
+          showAlternativeLogin: true,
+        })
+        .on(VKID.WidgetEvents.ERROR, (error: any) => {
+          console.error('VK Auth Error:', error);
+          setIsLoading(false);
+        })
+        .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, (payload: any) => {
+          const code = payload.code;
+          const deviceId = payload.device_id;
+
+          VKID.Auth.exchangeCode(code, deviceId)
+            .then((data: any) => {
+              onAuth({
+                first_name: data.user.first_name,
+                last_name: data.user.last_name,
+                avatar_url: data.user.avatar_url,
+                vk_user_id: data.user.id.toString()
+              });
+              setIsLoading(false);
+            })
+            .catch((error: any) => {
+              console.error('VK Auth Exchange Error:', error);
+              setIsLoading(false);
+            });
+        });
+
+        setIsLoading(false);
+      }
+    };
+
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
     };
-  }, []);
-
-  const initVK = () => {
-    if ('VKIDSDK' in window && containerRef.current) {
-      const VKID = window.VKIDSDK;
-
-      VKID.Config.init({
-        app: 52942639,
-        redirectUrl: 'https://sudokuresh.ru/reviews',
-        responseMode: VKID.ConfigResponseMode.Callback,
-        source: VKID.ConfigSource.LOWCODE,
-        scope: '',
-      });
-
-      const oneTap = new VKID.OneTap();
-
-      oneTap.render({
-        container: containerRef.current,
-        showAlternativeLogin: true,
-        styles: {
-          borderRadius: 16,
-          width: 285
-        }
-      })
-      .on(VKID.WidgetEvents.ERROR, (error: any) => {
-        console.error('VK Auth Error:', error);
-      })
-      .on(VKID.OneTapInternalEvents.LOGIN_SUCCESS, (payload: any) => {
-        VKID.Auth.exchangeCode(payload.code, payload.device_id)
-          .then((data: any) => {
-            onAuth({
-              first_name: data.user.first_name,
-              last_name: data.user.last_name,
-              avatar_url: data.user.avatar_url,
-              vk_user_id: data.user.id.toString()
-            });
-          })
-          .catch((error: any) => {
-            console.error('VK Auth Exchange Error:', error);
-          });
-      });
-
-      setIsLoading(false);
-    }
-  };
+  }, [onAuth]);
 
   return (
     <div className="flex flex-col items-center gap-4">
