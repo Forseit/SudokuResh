@@ -75,7 +75,7 @@ const Reviews = () => {
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8"
         >
           <ArrowLeft className="h-4 w-4" />
-          Вернуться к игре
+          Вернуться назад
         </Link>
 
         <h1 className="text-3xl font-bold mb-8">Отзывы</h1>
