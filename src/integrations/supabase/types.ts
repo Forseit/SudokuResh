@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      advertisements: {
+        Row: {
+          active: boolean | null
+          countdown_seconds: number | null
+          created_at: string | null
+          description: string | null
+          display_type: string
+          id: string
+          image_url: string
+          target_url: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          countdown_seconds?: number | null
+          created_at?: string | null
+          description?: string | null
+          display_type: string
+          id?: string
+          image_url: string
+          target_url: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          countdown_seconds?: number | null
+          created_at?: string | null
+          description?: string | null
+          display_type?: string
+          id?: string
+          image_url?: string
+          target_url?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       global_stats: {
         Row: {
           games_solved: number | null
@@ -30,6 +69,24 @@ export type Database = {
           start_date?: string | null
           updates_count?: number | null
           user_count?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
         }
         Relationships: []
       }
@@ -87,6 +144,10 @@ export type Database = {
       increment_user_count: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      is_admin_ip: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
