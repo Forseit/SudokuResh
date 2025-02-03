@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SudokuGrid from "@/components/SudokuGrid";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "next-themes";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Moon, Sun, Keyboard, Printer, Languages } from "lucide-react";
 import { translations } from "@/utils/translations";
 import Footer from "@/components/Footer";
+import { AdManager } from "@/components/Advertisement/AdManager";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +17,9 @@ import {
 const Index = () => {
   const { theme, setTheme } = useTheme();
   const [useKeyboard, setUseKeyboard] = useState(true);
-  const [language, setLanguage] = useState<"en" | "ru">("ru");
+  const [language, setLanguage] = useState<"en" | "ru">(() => {
+    return localStorage.getItem("language") as "en" | "ru" || "ru";
+  });
 
   const handlePrint = () => {
     window.print();
@@ -24,6 +27,11 @@ const Index = () => {
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const handleLanguageChange = (newLang: "en" | "ru") => {
+    setLanguage(newLang);
+    localStorage.setItem("language", newLang);
   };
 
   const t = translations[language];
@@ -44,10 +52,10 @@ const Index = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setLanguage("ru")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ru")}>
                   Русский
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage("en")}>
+                <DropdownMenuItem onClick={() => handleLanguageChange("en")}>
                   English
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -79,6 +87,8 @@ const Index = () => {
             </Button>
           </div>
         </div>
+
+        <AdManager />
       </div>
       <Footer t={t} />
     </div>
