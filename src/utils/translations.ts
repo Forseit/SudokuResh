@@ -13,11 +13,24 @@ type Translations = {
     updatesReleased: string;
     daysFromStart: string;
     contactEmail: string;
+    reviews: string;
+    yourName: string;
+    yourReview: string;
+    anonymous: string;
+    submit: string;
+    anonymousUser: string;
+    error: string;
+    success: string;
+    reviewRequired: string;
+    reviewSubmitted: string;
+    errorOccurred: string;
+    goBack: string;
   };
 };
 
 export const translations: Translations = {
   en: {
+    // ... keep existing code (existing English translations)
     title: "Sudoku Solver",
     keyboard: "Keyboard",
     print: "Print",
@@ -30,9 +43,22 @@ export const translations: Translations = {
     gamesSolved: "Games Solved",
     updatesReleased: "Updates Released",
     daysFromStart: "Days Since Launch",
-    contactEmail: "Contact Email"
+    contactEmail: "Contact Email",
+    reviews: "Reviews",
+    yourName: "Your Name",
+    yourReview: "Your Review",
+    anonymous: "Post anonymously",
+    submit: "Submit Review",
+    anonymousUser: "Anonymous User",
+    error: "Error",
+    success: "Success",
+    reviewRequired: "Review content is required",
+    reviewSubmitted: "Review submitted successfully",
+    errorOccurred: "An error occurred while submitting the review",
+    goBack: "Go back"
   },
   ru: {
+    // ... keep existing code (existing Russian translations)
     title: "Решатель Судоку",
     keyboard: "Клавиатура",
     print: "Распечатать",
@@ -45,6 +71,18 @@ export const translations: Translations = {
     gamesSolved: "Игр решено",
     updatesReleased: "Обновлений сделано",
     daysFromStart: "Дней с открытия",
-    contactEmail: "Почта для связи"
+    contactEmail: "Почта для связи",
+    reviews: "Отзывы",
+    yourName: "Ваше имя",
+    yourReview: "Ваш отзыв",
+    anonymous: "Отправить анонимно",
+    submit: "Отправить отзыв",
+    anonymousUser: "Анонимный пользователь",
+    error: "Ошибка",
+    success: "Успешно",
+    reviewRequired: "Необходимо написать отзыв",
+    reviewSubmitted: "Отзыв успешно отправлен",
+    errorOccurred: "Произошла ошибка при отправке отзыва",
+    goBack: "Вернуться назад"
   },
 };
