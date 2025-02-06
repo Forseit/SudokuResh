@@ -25,12 +25,20 @@ type Translations = {
     reviewSubmitted: string;
     errorOccurred: string;
     goBack: string;
+    comments: string;
+    yourComment: string;
+    submitComment: string;
+    commentSubmitted: string;
+    loading: string;
+    reviewNotFound: string;
+    reply: string;
+    replyingTo: string;
+    cancel: string;
   };
 };
 
 export const translations: Translations = {
   en: {
-    // ... keep existing code (existing English translations)
     title: "Sudoku Solver",
     keyboard: "Keyboard",
     print: "Print",
@@ -55,10 +63,18 @@ export const translations: Translations = {
     reviewRequired: "Review content is required",
     reviewSubmitted: "Review submitted successfully",
     errorOccurred: "An error occurred while submitting the review",
-    goBack: "Go back"
+    goBack: "Go back",
+    comments: "Comments",
+    yourComment: "Your Comment",
+    submitComment: "Submit Comment",
+    commentSubmitted: "Comment submitted successfully",
+    loading: "Loading...",
+    reviewNotFound: "Review not found",
+    reply: "Reply to comment",
+    replyingTo: "Replying to",
+    cancel: "Cancel reply",
   },
   ru: {
-    // ... keep existing code (existing Russian translations)
     title: "Решатель Судоку",
     keyboard: "Клавиатура",
     print: "Распечатать",
@@ -83,6 +99,17 @@ export const translations: Translations = {
     reviewRequired: "Необходимо написать отзыв",
     reviewSubmitted: "Отзыв успешно отправлен",
     errorOccurred: "Произошла ошибка при отправке отзыва",
-    goBack: "Вернуться назад"
+    goBack: "Вернуться назад",
+    comments: "Комментарии",
+    yourComment: "Ваш комментарий",
+    submitComment: "Отправить комментарий",
+    commentSubmitted: "Комментарий успешно отправлен",
+    loading: "Загрузка...",
+    reviewNotFound: "Отзыв не найден",
+    reply: "Ответить на комментарий",
+    replyingTo: "Ответ на комментарий",
+    cancel: "Отменить ответ",
   },
 };
+
+export type Translations = typeof translations;
