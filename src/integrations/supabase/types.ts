@@ -18,6 +18,7 @@ export type Database = {
           display_type: string
           id: string
           image_url: string
+          probability: number | null
           target_url: string
           title: string
           updated_at: string | null
@@ -30,6 +31,7 @@ export type Database = {
           display_type: string
           id?: string
           image_url: string
+          probability?: number | null
           target_url: string
           title: string
           updated_at?: string | null
@@ -42,11 +44,60 @@ export type Database = {
           display_type?: string
           id?: string
           image_url?: string
+          probability?: number | null
           target_url?: string
           title?: string
           updated_at?: string | null
         }
         Relationships: []
+      }
+      comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          mention_name: string | null
+          name: string | null
+          parent_id: string | null
+          review_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          mention_name?: string | null
+          name?: string | null
+          parent_id?: string | null
+          review_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          mention_name?: string | null
+          name?: string | null
+          parent_id?: string | null
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       global_stats: {
         Row: {
@@ -97,6 +148,7 @@ export type Database = {
           id: string
           is_anonymous: boolean | null
           name: string | null
+          slug: string | null
         }
         Insert: {
           content: string
@@ -104,6 +156,7 @@ export type Database = {
           id?: string
           is_anonymous?: boolean | null
           name?: string | null
+          slug?: string | null
         }
         Update: {
           content?: string
@@ -111,6 +164,7 @@ export type Database = {
           id?: string
           is_anonymous?: boolean | null
           name?: string | null
+          slug?: string | null
         }
         Relationships: []
       }
