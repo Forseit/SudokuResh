@@ -1,30 +1,85 @@
 
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import PopupAd from "./PopupAd";
+import BannerAd from "./BannerAd";
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Reviews from "./pages/Reviews";
-import ReviewDetails from "./pages/ReviewDetails";
+export const AdManager = () => {
+  const [showPopup, setShowPopup] = useState(false);
 
-const queryClient = new QueryClient();
+  const { data: ads } = useQuery({
+    queryKey: ["advertisements"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("advertisements")
+        .select("*")
+        .eq("active", true);
+      
+      if (error) throw error;
+      return data;
+    },
+  });
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/reviews/:id" element={<ReviewDetails />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  const selectRandomAd = (adType: "popup" | "banner") => {
+    const typeAds = ads?.filter(ad => ad.display_type === adType) || [];
+    if (typeAds.length === 0) return null;
 
-export default App;
+    // Create an array of ads weighted by their probability
+    const weightedAds: typeof typeAds = [];
+    typeAds.forEach(ad => {
+      const weight = ad.probability || 25; // Default to 25% if not set
+      for (let i = 0; i < weight; i++) {
+        weightedAds.push(ad);
+      }
+    });
+
+    // Select a random ad from the weighted array
+    const randomIndex = Math.floor(Math.random() * weightedAds.length);
+    return weightedAds[randomIndex];
+  };
+
+  useEffect(() => {
+    // Show popup ad after a short delay
+    const timer = setTimeout(() => {
+      const popupAd = selectRandomAd("popup");
+      if (popupAd) {
+        setShowPopup(true);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [ads]);
+
+  const bannerAds = ads?.filter(ad => ad.display_type === "banner") || [];
+  const popupAd = selectRandomAd("popup");
+
+  return (
+    <>
+      {showPopup && popupAd && (
+        <PopupAd
+          imageUrl={popupAd.image_url}
+          targetUrl={popupAd.target_url}
+          countdownSeconds={popupAd.countdown_seconds || 30}
+          onClose={() => setShowPopup(false)}
+          title={popupAd.title}
+          description={popupAd.description}
+        />
+      )}
+      
+      {bannerAds.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-8">
+          {bannerAds.map((ad) => (
+            <BannerAd
+              key={ad.id}
+              title={ad.title}
+              description={ad.description || undefined}
+              imageUrl={ad.image_url}
+              targetUrl={ad.target_url}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
