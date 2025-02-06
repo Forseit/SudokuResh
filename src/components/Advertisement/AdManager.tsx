@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,10 +21,28 @@ export const AdManager = () => {
     },
   });
 
+  const selectRandomAd = (adType: "popup" | "banner") => {
+    const typeAds = ads?.filter(ad => ad.display_type === adType) || [];
+    if (typeAds.length === 0) return null;
+
+    // Create an array of ads weighted by their probability
+    const weightedAds: typeof typeAds = [];
+    typeAds.forEach(ad => {
+      const weight = ad.probability || 25; // Default to 25% if not set
+      for (let i = 0; i < weight; i++) {
+        weightedAds.push(ad);
+      }
+    });
+
+    // Select a random ad from the weighted array
+    const randomIndex = Math.floor(Math.random() * weightedAds.length);
+    return weightedAds[randomIndex];
+  };
+
   useEffect(() => {
     // Show popup ad after a short delay
     const timer = setTimeout(() => {
-      const popupAd = ads?.find(ad => ad.display_type === "popup");
+      const popupAd = selectRandomAd("popup");
       if (popupAd) {
         setShowPopup(true);
       }
@@ -33,7 +52,7 @@ export const AdManager = () => {
   }, [ads]);
 
   const bannerAds = ads?.filter(ad => ad.display_type === "banner") || [];
-  const popupAd = ads?.find(ad => ad.display_type === "popup");
+  const popupAd = selectRandomAd("popup");
 
   return (
     <>
@@ -41,8 +60,10 @@ export const AdManager = () => {
         <PopupAd
           imageUrl={popupAd.image_url}
           targetUrl={popupAd.target_url}
-          countdownSeconds={popupAd.countdown_seconds || 5}
+          countdownSeconds={popupAd.countdown_seconds || 30}
           onClose={() => setShowPopup(false)}
+          title={popupAd.title}
+          description={popupAd.description}
         />
       )}
       
