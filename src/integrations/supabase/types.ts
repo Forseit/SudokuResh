@@ -56,6 +56,7 @@ export type Database = {
           content: string
           created_at: string | null
           id: string
+          ip_address: string | null
           is_anonymous: boolean | null
           mention_name: string | null
           name: string | null
@@ -66,6 +67,7 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: string
+          ip_address?: string | null
           is_anonymous?: boolean | null
           mention_name?: string | null
           name?: string | null
@@ -76,6 +78,7 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: string
+          ip_address?: string | null
           is_anonymous?: boolean | null
           mention_name?: string | null
           name?: string | null
@@ -146,6 +149,7 @@ export type Database = {
           content: string
           created_at: string | null
           id: string
+          ip_address: string | null
           is_anonymous: boolean | null
           name: string | null
           slug: string | null
@@ -154,6 +158,7 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: string
+          ip_address?: string | null
           is_anonymous?: boolean | null
           name?: string | null
           slug?: string | null
@@ -162,6 +167,7 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: string
+          ip_address?: string | null
           is_anonymous?: boolean | null
           name?: string | null
           slug?: string | null
