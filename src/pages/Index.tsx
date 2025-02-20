@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import SudokuGrid from "@/components/SudokuGrid";
 import { Switch } from "@/components/ui/switch";
@@ -40,7 +41,10 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <div className="w-full max-w-4xl px-4 mx-auto flex-grow">
         <div className="flex justify-between items-center mb-8 pt-6">
-          <h1 className="text-3xl font-bold">{t.title}</h1>
+          <div className="flex items-center gap-4">
+            <img src="https://i.imgur.com/qGmOQDj.png" alt="Logo" className="h-8 w-8" />
+            <h1 className="text-3xl font-bold">{t.title}</h1>
+          </div>
           <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
