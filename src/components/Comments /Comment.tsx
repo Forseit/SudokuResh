@@ -8,7 +8,7 @@ interface CommentProps {
   language: "en" | "ru";
   formatDate: (date: string) => string;
   onReply: (commentId: string, commentName: string) => void;
-  onScrollToComment: (commentId: string) => void;a
+  onScrollToComment: (commentId: string) => void;
 }
 
 const Comment = ({
