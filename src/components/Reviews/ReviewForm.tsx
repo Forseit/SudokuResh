@@ -108,4 +108,4 @@ const ReviewForm = ({ language, onSuccess }: ReviewFormProps) => {
   );
 };
 
-export default ReviewForm;ReviewForm
+export default ReviewForm;

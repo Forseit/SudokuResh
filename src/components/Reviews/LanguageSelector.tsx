@@ -36,4 +36,4 @@ const LanguageSelector = ({ language, onLanguageChange }: LanguageSelectorProps)
   );
 };
 
-export default LanguageSelector;LanguageSelector
+export default LanguageSelector;
