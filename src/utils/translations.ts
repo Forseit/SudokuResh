@@ -1,43 +1,5 @@
-type Translations = {
-  [key: string]: {
-    title: string;
-    keyboard: string;
-    print: string;
-    solve: string;
-    clear: string;
-    solvedSuccess: string;
-    solvedError: string;
-    gridCleared: string;
-    users: string;
-    gamesSolved: string;
-    updatesReleased: string;
-    daysFromStart: string;
-    contactEmail: string;
-    reviews: string;
-    yourName: string;
-    yourReview: string;
-    anonymous: string;
-    submit: string;
-    anonymousUser: string;
-    error: string;
-    success: string;
-    reviewRequired: string;
-    reviewSubmitted: string;
-    errorOccurred: string;
-    goBack: string;
-    comments: string;
-    yourComment: string;
-    submitComment: string;
-    commentSubmitted: string;
-    loading: string;
-    reviewNotFound: string;
-    reply: string;
-    replyingTo: string;
-    cancel: string;
-  };
-};
 
-export const translations: Translations = {
+export const translations = {
   en: {
     title: "Sudoku Solver",
     keyboard: "Keyboard",
@@ -73,6 +35,12 @@ export const translations: Translations = {
     reply: "Reply to comment",
     replyingTo: "Replying to",
     cancel: "Cancel reply",
+    showMore: "Show more comments",
+    showLess: "Hide comments",
+    navigation: "Navigation",
+    likes: "Likes",
+    to: ",",
+    main: "Main", // Added for navigation
   },
   ru: {
     title: "Решатель Судоку",
@@ -87,7 +55,7 @@ export const translations: Translations = {
     gamesSolved: "Игр решено",
     updatesReleased: "Обновлений сделано",
     daysFromStart: "Дней с открытия",
-    contactEmail: "Почта для связи",
+    contactEmail: "admin@sudokuresh.ru",
     reviews: "Отзывы",
     yourName: "Ваше имя",
     yourReview: "Ваш отзыв",
@@ -109,6 +77,12 @@ export const translations: Translations = {
     reply: "Ответить на комментарий",
     replyingTo: "Ответ на комментарий",
     cancel: "Отменить ответ",
+    showMore: "Показать больше комментариев",
+    showLess: "Скрыть комментарии",
+    navigation: "Навигация",
+    likes: "Лайки",
+    to: ",",
+    main: "Главная", // Added for navigation
   },
 };
 
